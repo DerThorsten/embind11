@@ -4,8 +4,7 @@ project(embind11 VERSION 1.0.1 DESCRIPTION "embind11 description")
 
 
 
-set(EM_FLAGS "${EM_FLAGS} --bind  -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions"
-)
+set(EM_FLAGS "${EM_FLAGS} --bind -s DYNAMIC_EXECUTION=1  -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
 
 # linker flags
 set(EM_LINKER_FLAGS "${EM_LINKER_FLAGS} -s FORCE_FILESYSTEM=1 -s MODULARIZE -s ERROR_ON_UNDEFINED_SYMBOLS=0")
@@ -42,9 +41,11 @@ pybind11_add_module(embind11 SHARED embind11_side.cpp)
 ###########################################################################
 # embed python in a wasm executable (this IS MAIN
 ###########################################################################
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable(embed 
     embed.cpp
-    src/val.cpp
+    src/convert.cpp
+    src/export_js_module.cpp
 )
 set_target_properties(embed PROPERTIES
             CXX_STANDARD 17

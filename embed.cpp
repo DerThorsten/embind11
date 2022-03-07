@@ -4,20 +4,19 @@
 #include <emscripten/bind.h>
 #include <iostream>
 #include <filesystem>
-
+#include <embind11/convert.hpp>
 
 
 namespace py = pybind11;
 namespace em = emscripten;
 
-void export_ems_module(py::module_ & m);
+void export_js_module(py::module_ & m);
 
 
 // mini helper to access js objects from python
-PYBIND11_EMBEDDED_MODULE(ems, m) {
-    export_ems_module(m);
+PYBIND11_EMBEDDED_MODULE(js, m) {
+    export_js_module(m);
 }
-
 
 void embed_hello_world() 
 {
@@ -50,19 +49,6 @@ void exec_code(const std::string & code)
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 void set_pythonhome(const std::string & home)
 {
     setenv("PYTHONHOME",home.c_str(),1); // does overwrite
@@ -72,46 +58,56 @@ void set_pythonpath(const std::string & path)
     setenv("PYTHONPATH",path.c_str(),1); // does overwrite
 }
 
-bool is_dir(const std::string & path)
-{
-    const std::filesystem::path fubar{path};
-    return std::filesystem::is_directory(fubar);
-}
-
-void iter_dir(const std::string & path)
-{
-
-    const std::filesystem::path p{path};
-    if(std::filesystem::is_directory(p))
-    {
-
-        std::cout<<"iterating "<<path<<":\n";
-        for (auto const& dir_entry : std::filesystem::directory_iterator{p}) 
-        {
-            std::cout << dir_entry.path().string()<< '\n';
-        }
-    }
-}
-
-bool is_regular_file(const std::string & path)
-{
-    const std::filesystem::path fubar{path};
-    return std::filesystem::is_regular_file(fubar);
-}
-
-
-
 EMSCRIPTEN_BINDINGS(my_module) {
 
     em::class_<py::object>("pyobject")
-        .function("__call__", 
 
-            em::select_overload<int(py::object &, em::val)>(
-                [](py::object & pyobject, em::val arg1){
+        // 0-ary
+        .function("__call__", 
+            em::select_overload<int(py::object &)>(
+                [](py::object & pyobject)
+                {
                     pyobject();
                     return 1;
                 }
             )
+        )
+
+        // 1-ary
+        .function("__call__", 
+            em::select_overload<int(py::object &, em::val)>([](py::object & pyobject, em::val arg1){
+                // py::object = convert_impl(arg1);
+                pyobject(arg1);
+                return 1;
+            })
+        )
+
+        // 2-ary
+        .function("__call__", 
+            em::select_overload<int(py::object &, em::val, em::val)>([](py::object & pyobject, em::val arg1, em::val arg2)
+            {
+                // py::object = convert_impl(arg1);
+                pyobject(arg1, arg2);
+                return 1;
+            })
+        )
+        // 3-ary
+        .function("__call__", 
+            em::select_overload<int(py::object &, em::val, em::val, em::val)>([](py::object & pyobject, em::val arg1, em::val arg2, em::val arg3)
+            {
+                // py::object = convert_impl(arg1);
+                pyobject(arg1, arg2, arg3);
+                return 1;
+            })
+        )
+        // 4-ary
+        .function("__call__", 
+            em::select_overload<int(py::object &, em::val, em::val, em::val, em::val)>([](py::object & pyobject, em::val arg1, em::val arg2, em::val arg3, em::val arg4)
+            {
+                // py::object = convert_impl(arg1);
+                pyobject(arg1, arg2, arg3, arg4);
+                return 1;
+            })
         )
     ;
 
@@ -125,13 +121,10 @@ EMSCRIPTEN_BINDINGS(my_module) {
 
 
 
-    em::function("is_dir", &is_dir);
-    em::function("iter_dir", &iter_dir);
-    em::function("is_regular_file", &is_regular_file);
 
     em::function("set_pythonhome", &set_pythonhome);
     em::function("set_pythonpath", &set_pythonpath);
 
     em::function("exec_code", &exec_code);
-    em::function("embed_hello_world", &embed_hello_world);
+
 }

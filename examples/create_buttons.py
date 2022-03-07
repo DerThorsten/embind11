@@ -1,18 +1,15 @@
-import ems
+import js
 
 def py_callback():
   print("the callback fired")
-  
-def js_callback(py_function):
-  js_py_object = ems.val.py_object(py_function)
-  return js_py_object['__call__'].bind(js_py_object)
 
-document = ems.val.get_global('document')
-button = document.call("createElement", "button")
+# create a button
+button = js.document.createElement("button")
+
+# change text and add callback
 button['innerHTML'] = 'py created'
-body = document['body']
+button['onclick'] = js.js_callback(py_callback)
 
-button["onclick"] = js_callback(py_callback)
+# add the button to the document
+js.document.body.appendChild(button)
 
-
-body.call('appendChild', button)
