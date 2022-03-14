@@ -59,9 +59,7 @@
 
 
     window.onload = () => {
-        console.log("onload")
         var savedText = localStorage.getItem("text") || "";
-        console.log("savedText",savedText)
         editor.getDoc().setValue(savedText);
     };
 
@@ -70,13 +68,15 @@
     var Module = {}
     createModule({
       print: print,
-      printErr:printErr
+      printErr:printErr,
       // stderr: stderr,
     })
       .then((themodule) => {
         Module = themodule
 
 
+
+        console.log("python_data ..")
         import('/python_data.js').then(datamodule => {
             console.log("directories mounted")
         });
@@ -86,6 +86,8 @@
         console.log("delay")
         delay(1000).then(()=>{
           console.log("in delay then")
+
+          console.log("embind11 ..")
           import('/embind11.js').then(datamodule => {
             console.log("libs mounted")
             console.log("Initializing interpreter")
@@ -99,6 +101,14 @@
             logeditor.getDoc().setValue("")
             var text = editor.getValue();
             localStorage.setItem("text", text)
+
+
+            // Module.ccall("exec_code", null, ["string"], [text], {async: true}).then(result => {
+            //   console.log("DONE");
+            // });
+
+
+
             try{
               themodule.exec_code(text)
             }
@@ -108,8 +118,6 @@
             }
           };
           document.body.appendChild(btn2);
-
-
         })
         
       });

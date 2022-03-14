@@ -5,6 +5,7 @@
 #include <iostream>
 #include <filesystem>
 #include <embind11/convert.hpp>
+#include <strings.h>
 
 
 namespace py = pybind11;

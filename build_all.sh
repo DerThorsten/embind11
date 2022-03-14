@@ -11,6 +11,7 @@ emboa pack python core $HOME/micromamba/envs/emtest --version=3.11
 export PREFIX=$HOME/micromamba/envs/emtest
 export CMAKE_PREFIX_PATH=$PREFIX 
 export CMAKE_SYSTEM_PREFIX_PATH=$PREFIX 
+# export EMCC_FORCE_STDLIBS=1
 emcmake cmake  \
     -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON \
     -DCMAKE_VERBOSE_MAKEFILE=ON \

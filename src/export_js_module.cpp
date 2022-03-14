@@ -77,7 +77,6 @@ void export_val(py::module_ & m)
 
     py::class_<em::val>(m, "val",  py::dynamic_attr())
 
-
         .def_static( "get_global", [](const std::string & arg){
             return em::val::global(arg.c_str());
         })
@@ -109,8 +108,12 @@ void export_val(py::module_ & m)
         .def(py::init([](bool arg) {
             return std::unique_ptr<em::val>(new em::val(arg));
         }))
-
-
+        // .def("new",[](em::val  v, em::val arg1){
+        //     return  v.new_(arg1);
+        // })
+        // .def("__bool__",[](em::val * v){
+        //     return  v->as<bool>();
+        // })
         .def("hasOwnProperty",[](em::val * v, const std::string & key){
             return  v->hasOwnProperty(key.c_str( ));
         })
@@ -206,15 +209,15 @@ void export_val(py::module_ & m)
     });
 }
 
-void export_exec(py::module_ & m)
-{
-    // m.def("run_script", [](const std::string & code){
-    //     emscripten_run_script(code.c_str());
-    // });
-    // m.def("eval",[](const std::string & code) -> em::val {
-    //     return em::val::global("eval").operator()(code);
-    // });
-}
+// void export_exec(py::module_ & m)
+// {
+//     // m.def("run_script", [](const std::string & code){
+//     //     emscripten_run_script(code.c_str());
+//     // });
+//     // m.def("eval",[](const std::string & code) -> em::val {
+//     //     return em::val::global("eval").operator()(code);
+//     // });
+// }
 
 void export_js_module(py::module_ & m)
 {  
