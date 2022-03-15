@@ -77,18 +77,18 @@
 
 
         console.log("python_data ..")
-        import('/python_data.js').then(datamodule => {
+        import('./python_data.js').then(datamodule => {
             console.log("directories mounted")
         });
 
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
         console.log("delay")
-        delay(1000).then(()=>{
+        delay(5000).then(()=>{
           console.log("in delay then")
 
           console.log("embind11 ..")
-          import('/embind11.js').then(datamodule => {
+          import('./embind11.js').then(datamodule => {
             console.log("libs mounted")
             console.log("Initializing interpreter")
 

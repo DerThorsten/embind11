@@ -3,9 +3,10 @@ project(embind11 VERSION 1.0.1 DESCRIPTION "embind11 description")
 
 
 
-
 set(EM_FLAGS "${EM_FLAGS} --bind   -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
-
+set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js")
+set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
+set(EM_FLAGS "${EM_FLAGS} --extern-pre-js extern_pre.js")
 # linker flags
 set(EM_LINKER_FLAGS "${EM_LINKER_FLAGS} -WASM=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE -s ERROR_ON_UNDEFINED_SYMBOLS=1")
 set(EM_LINKER_FLAGS "${EM_LINKER_FLAGS} -s EXPORT_NAME=\"createModule\" -s EXPORT_ES6=0 -s USE_ES6_IMPORT_META=0 -s ERROR_ON_UNDEFINED_SYMBOLS=1")
@@ -23,8 +24,10 @@ SET(PYTHON_UTIL_LIBS
 )
 
 
-configure_file(usage.html  ${CMAKE_CURRENT_BINARY_DIR}/usage.html COPYONLY)
-
+configure_file(usage.html           ${CMAKE_CURRENT_BINARY_DIR}/usage.html COPYONLY)
+configure_file(pre.js               ${CMAKE_CURRENT_BINARY_DIR}/pre.js COPYONLY)
+configure_file(post.js              ${CMAKE_CURRENT_BINARY_DIR}/post.js COPYONLY)
+configure_file(extern_pre.js        ${CMAKE_CURRENT_BINARY_DIR}/extern_pre.js COPYONLY)
 
 
 ################################################################

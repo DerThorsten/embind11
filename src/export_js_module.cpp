@@ -24,6 +24,10 @@ void pseudo_init(py::module_ & m)
     // py::object scope = py::module_::import("__main__").attr("__dict__");
     py::exec(R"pycode(
 
+
+class js(object):
+    pass
+
 # module level __getattr__ to do thinks like:
 # js.document instead of val.get_global("document")
 def __getattr__(name):
@@ -63,6 +67,15 @@ def js_callback(py_function):
 
 def console_log(*args):
     val.get_global("console").log(*args)
+
+
+def apply(js_function, args):
+    js_array_args = val.array()
+    for arg in args:
+        js_arg = val(arg)
+        js_array_args.push(js_arg)
+    return js_function.apply(val.null(), js_array_args)
+
 
 )pycode",scope);
 }

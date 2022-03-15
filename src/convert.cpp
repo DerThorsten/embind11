@@ -18,7 +18,6 @@ bool is_array(em::val em_val)
     return em::val::global("Array").call<em::val>("isArray", em_val).as<bool>();
 }
 
-
 py::object convert_impl(em::val em_val)
 {
     const auto js_type = type_string(em_val);
