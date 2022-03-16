@@ -35,7 +35,7 @@ configure_file(extern_pre.js        ${CMAKE_CURRENT_BINARY_DIR}/extern_pre.js CO
 # create compiled extension named "embind11" which we want to consume
 # in another wasm executable  
 ################################################################
-pybind11_add_module(embind11 SHARED embind11_side.cpp)
+pybind11_add_module(embind11_side SHARED embind11_side.cpp)
 
 
 

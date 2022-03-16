@@ -75,50 +75,49 @@
         Module = themodule
 
 
-
-        console.log("python_data ..")
-        import('./python_data.js').then(datamodule => {
-            console.log("directories mounted")
-        });
-
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
-        console.log("delay")
-        delay(5000).then(()=>{
-          console.log("in delay then")
 
-          console.log("embind11 ..")
-          import('./embind11.js').then(datamodule => {
-            console.log("libs mounted")
-            console.log("Initializing interpreter")
-
-            themodule.initialize_interpreter()
-          });
-
-          let btn2 = document.createElement("button");
-          btn2.innerHTML = "run-try-catch";
-          btn2.onclick = function () {
-            logeditor.getDoc().setValue("")
-            var text = editor.getValue();
-            localStorage.setItem("text", text)
+        console.log("python_data NEW ..")
+        import('./python_data.js').then(datamodule => {
+            console.log("directories mounted")
 
 
-            // Module.ccall("exec_code", null, ["string"], [text], {async: true}).then(result => {
-            //   console.log("DONE");
-            // });
+            console.log("delay")
+            delay(1000).then(()=>{
+              console.log("in delay then")
+
+              console.log("embind11_side ..")
+              import('./embind11_side.js').then(datamodule => {
+                console.log("libs mounted")
+                console.log("Initializing interpreter")
+
+                themodule.initialize_interpreter()
+
+
+                let btn2 = document.createElement("button");
+                btn2.innerHTML = "run-try-catch";
+                btn2.onclick = function () {
+                  logeditor.getDoc().setValue("")
+                  var text = editor.getValue();
+                  localStorage.setItem("text", text)
+
+                  try{
+                    themodule.exec_code(text)
+                  }
+                  catch (e) {
+                    console.log("ERROR CATCHED",e)
+                    logeditor.replaceRange("JS-ERROR: "+String(e)+"\n", CodeMirror.Pos(logeditor.lastLine()))
+                  }
+                };
+                document.body.appendChild(btn2);
+
+              });
+            })
+        });
 
 
 
-            try{
-              themodule.exec_code(text)
-            }
-            catch (e) {
-              console.log("ERROR CATCHED",e)
-              logeditor.replaceRange("JS-ERROR: "+String(e)+"\n", CodeMirror.Pos(logeditor.lastLine()))
-            }
-          };
-          document.body.appendChild(btn2);
-        })
         
       });
   </script>

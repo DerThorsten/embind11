@@ -9,11 +9,11 @@ int add(int i, int j) {
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(embind11, m) {
+PYBIND11_MODULE(embind11_side, m) {
     m.doc() = R"pbdoc(
         Pybind11 example plugin
         -----------------------
-        .. currentmodule:: embind11
+        .. currentmodule:: embind11_side
         .. autosummary::
            :toctree: _generate
            add
