@@ -48,6 +48,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable(embed 
     embed.cpp
     src/convert.cpp
+    src/pure_python_init.cpp
     src/export_js_module.cpp
 )
 set_target_properties(embed PROPERTIES

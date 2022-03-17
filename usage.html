@@ -64,62 +64,57 @@
     };
 
 
-
-    var Module = {}
-    createModule({
-      print: print,
-      printErr:printErr,
-      // stderr: stderr,
-    })
-      .then((themodule) => {
-        Module = themodule
-
-
-        const delay = ms => new Promise(res => setTimeout(res, ms));
-
-
-        console.log("python_data NEW ..")
-        import('./python_data.js').then(datamodule => {
-            console.log("directories mounted")
-
-
-            console.log("delay")
-            delay(1000).then(()=>{
-              console.log("in delay then")
-
-              console.log("embind11_side ..")
-              import('./embind11_side.js').then(datamodule => {
-                console.log("libs mounted")
-                console.log("Initializing interpreter")
-
-                themodule.initialize_interpreter()
-
-
-                let btn2 = document.createElement("button");
-                btn2.innerHTML = "run-try-catch";
-                btn2.onclick = function () {
-                  logeditor.getDoc().setValue("")
-                  var text = editor.getValue();
-                  localStorage.setItem("text", text)
-
-                  try{
-                    themodule.exec_code(text)
-                  }
-                  catch (e) {
-                    console.log("ERROR CATCHED",e)
-                    logeditor.replaceRange("JS-ERROR: "+String(e)+"\n", CodeMirror.Pos(logeditor.lastLine()))
-                  }
-                };
-                document.body.appendChild(btn2);
-
-              });
-            })
-        });
-
-
-
-        
+    function waitRunDependency() {
+      const promise = new Promise((r) => {
+        Module.monitorRunDependencies = (n) => {
+          if (n === 0) {
+            console.log("ALL ZERO")
+            r();
+          }
+        };
       });
+      // If there are no pending dependencies left, monitorRunDependencies will
+      // never be called. Since we can't check the number of dependencies,
+      // manually trigger a call.
+      Module.addRunDependency("dummy");
+      Module.removeRunDependency("dummy");
+      return promise;
+    }
+
+    var Module = {};
+    (async function() {
+
+      var themodule = await createModule({print: print,printErr:printErr})
+      Module = themodule
+      var promise_core = await import('./python_data.js')
+      var promise_side = await import('./embind11_side.js')
+      var deps = await waitRunDependency()
+
+
+      themodule.initialize_interpreter()
+
+
+      let btn2 = document.createElement("button");
+      btn2.innerHTML = "run-try-catch";
+      btn2.onclick = function () {
+        logeditor.getDoc().setValue("")
+        var text = editor.getValue();
+        localStorage.setItem("text", text)
+
+        try{
+          themodule.exec_code(text)
+        }
+        catch (e) {
+          console.log("ERROR CATCHED",e)
+          logeditor.replaceRange("JS-ERROR: "+String(e)+"\n", CodeMirror.Pos(logeditor.lastLine()))
+        }
+      };
+      document.body.appendChild(btn2);
+
+
+    })();
+
+
   </script>
 </body>
 </html>
