@@ -14,7 +14,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EM_FLAGS} ${EM_LINKER_FLAGS}")
 set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS}  ${EM_FLAGS} ${EM_LINKER_FLAGS}")
 
 
-find_package(pybind11 REQUIRED CONFIG)
+find_package(pybind11 REQUIRED)
 
 SET(PYTHON_UTIL_LIBS 
     $ENV{PREFIX}/lib/python_internal/libmpdec.a
@@ -24,7 +24,7 @@ SET(PYTHON_UTIL_LIBS
 )
 
 
-configure_file(usage.html           ${CMAKE_CURRENT_BINARY_DIR}/usage.html COPYONLY)
+configure_file(embind11.html        ${CMAKE_CURRENT_BINARY_DIR}/embind11.html COPYONLY)
 configure_file(pre.js               ${CMAKE_CURRENT_BINARY_DIR}/pre.js COPYONLY)
 configure_file(post.js              ${CMAKE_CURRENT_BINARY_DIR}/post.js COPYONLY)
 configure_file(extern_pre.js        ${CMAKE_CURRENT_BINARY_DIR}/extern_pre.js COPYONLY)
@@ -69,4 +69,5 @@ install(TARGETS embed
 install(FILES
     "$<TARGET_FILE_DIR:embed>/embed.js"
     "$<TARGET_FILE_DIR:embed>/embed.wasm"
+    "$<TARGET_FILE_DIR:embed>/embind11.html"
     DESTINATION ${CMAKE_INSTALL_BINDIR})
