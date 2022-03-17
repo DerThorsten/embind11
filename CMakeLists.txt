@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(embind11 VERSION 0.1.1 DESCRIPTION "embind11 description")
+project(embind11 VERSION 0.1.2 DESCRIPTION "embind11 description")
 
 
 
@@ -66,6 +66,11 @@ target_link_libraries(embed PRIVATE ${PYTHON_UTIL_LIBS} pybind11::embed)
 include(GNUInstallDirs)
 install(TARGETS embed
     ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(TARGETS embind11_side
+    ARCHIVE DESTINATION ${PYTHON_SITE_PACKAGES})
+
+
 install(FILES
     "$<TARGET_FILE_DIR:embed>/embed.js"
     "$<TARGET_FILE_DIR:embed>/embed.wasm"
