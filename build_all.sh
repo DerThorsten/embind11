@@ -24,7 +24,7 @@ make -j12
 
 emboa pack python pure-so \
     $HOME/micromamba/envs/emforgetest \
-    embind11.so \
-    embind11 \
+    embind11_side.so \
+    embind11_side \
     --version=3.11
 

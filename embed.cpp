@@ -15,7 +15,7 @@ void export_js_module(py::module_ & m);
 
 
 // mini helper to access js objects from python
-PYBIND11_EMBEDDED_MODULE(js, m) {
+PYBIND11_EMBEDDED_MODULE(embind11, m) {
     export_js_module(m);
 }
 

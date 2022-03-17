@@ -35,7 +35,7 @@ configure_file(extern_pre.js        ${CMAKE_CURRENT_BINARY_DIR}/extern_pre.js CO
 # create compiled extension named "embind11" which we want to consume
 # in another wasm executable  
 ################################################################
-pybind11_add_module(embind11 SHARED embind11_side.cpp)
+pybind11_add_module(embind11_side SHARED embind11_side.cpp)
 
 
 
@@ -48,6 +48,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable(embed 
     embed.cpp
     src/convert.cpp
+    src/pure_python_init.cpp
     src/export_js_module.cpp
 )
 set_target_properties(embed PROPERTIES

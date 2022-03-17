@@ -1,7 +1,7 @@
-import js
+import embind11 as ems
 
 # get the canvas
-canvas = js.document.getElementById('mycanvas')
+canvas = ems.js.document.getElementById('mycanvas')
 ctx = canvas.getContext("2d")
 
 # bounding box / topleft
@@ -27,6 +27,6 @@ def mouse_move(e):
 def mouse_up(e):
     is_down[0] = False
 
-canvas['onmousedown'] = js.js_callback(mouse_down)
-canvas['onmousemove'] = js.js_callback(mouse_move)
-canvas['onmouseup'] = js.js_callback(mouse_up)
+canvas['onmousedown'] = ems.js.js_callback(mouse_down)
+canvas['onmousemove'] = ems.js.js_callback(mouse_move)
+canvas['onmouseup'] = ems.js.js_callback(mouse_up)

@@ -13,74 +13,8 @@
 namespace py = pybind11;
 namespace em = emscripten;
 
-// PYBIND11_EMBEDDED_MODULE(emsfun, m) {
-//     py::class_<std::vector<int>>(m, "myvec")
-//     ;
-// }
 
-void pseudo_init(py::module_ & m)
-{
-    py::object scope  = m.attr("__dict__");
-    // py::object scope = py::module_::import("__main__").attr("__dict__");
-    py::exec(R"pycode(
-
-
-class js(object):
-    pass
-
-# module level __getattr__ to do thinks like:
-# js.document instead of val.get_global("document")
-def __getattr__(name):
-    ret = val.get_global(name)
-    if ret.type_string() == "undefined":
-        raise AttributeError(f"has no attribute {name}")
-    return ret
-
-def extend_val():
-
-    def val_call(self, *args, **kwargs):
-        if hasattr(self, '_embind11_parent'):
-            return self._embind11_parent.call(self._embind11_self_key, *args, **kwargs)
-        else:
-            return self._fcal(*args, **kwargs)
-    val.__call__ = val_call
-
-    def val_getattr(self, key):
-        if(key == "_embind11_parent"):
-            raise AttributeError()
-        ret = self._raw__getitem__(key)
-        if ret.type_string() == "undefined":
-            raise AttributeError(f"has no attribute {key}")
-        ret._embind11_parent = self
-        ret._embind11_self_key = key
-        return ret
-
-    val.__getitem__ = val_getattr
-    val.__getattr__ = val_getattr
-
-extend_val()
-del extend_val
-
-def js_callback(py_function):
-  js_py_object = val.py_object(py_function)
-  return js_py_object['__call__'].bind(js_py_object)
-
-def console_log(*args):
-    val.get_global("console").log(*args)
-
-
-def apply(js_function, args):
-    js_array_args = val.array()
-    for arg in args:
-        js_arg = val(arg)
-        js_array_args.push(js_arg)
-    return js_function.apply(val.null(), js_array_args)
-
-
-)pycode",scope);
-}
-
-
+void pseudo_init(py::module_ & m);
 
 
 void export_val(py::module_ & m)
@@ -88,23 +22,49 @@ void export_val(py::module_ & m)
     // py::class_<EmValProxy>(m, "EmValProxy")
     // ;
 
-    py::class_<em::val>(m, "val",  py::dynamic_attr())
+    m.def("js_get_global", [](const std::string & arg){
+        return em::val::global(arg.c_str());
+    });
+    m.def( "module_property", [](const std::string & arg){
+        return em::val::module_property(arg.c_str());
+    });
 
-        .def_static( "get_global", [](const std::string & arg){
-            return em::val::global(arg.c_str());
-        })
-        .def_static( "module_property", [](const std::string & arg){
-            return em::val::module_property(arg.c_str());
-        })
-        .def_static("array", [](){return em::val::array();})
-        .def_static("object", [](){return em::val::object();})
-        .def_static("undefined", [](){return em::val::undefined();})
-        .def_static("null", [](){return em::val::null();})
-        .def_static("py_object",[](py::object py_object){
-            return em::val(std::move(py_object));
-        }, py::return_value_policy::copy)
-        // .def_static( "as_handle", [](){return em::val::as_handle();})
 
+    m.def("js_array", [](){return em::val::array();});
+    m.def("js_object", [](){return em::val::object();});
+    m.def("js_undefined", [](){return em::val::undefined();});
+    m.def("js_null", [](){return em::val::null();});
+    m.def("js_py_object",[](py::object py_object){
+        return em::val(std::move(py_object));
+    }, py::return_value_policy::copy);
+
+
+
+    m.def("val_call",[](em::val * v, const std::string & key, em::val & arg1){
+        return v->call<em::val>(key.c_str(), arg1);
+    });
+
+    m.def("val_call",[](em::val * v, const std::string & key, em::val & arg1,  em::val & arg2){
+        return v->call<em::val>(key.c_str(), arg1, arg2);
+    });
+
+    m.def("val_function_call",[](em::val * v){
+        return v->operator()();
+    });
+    m.def("val_function_call",[](em::val * v, em::val  arg1){
+        return v->operator()(arg1);
+    });
+    m.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2){
+        return v->operator()(arg1, arg2);
+    });
+    m.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2,  em::val  arg3){
+        return v->operator()(arg1, arg2, arg3);
+    });
+    m.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2,  em::val  arg3,  em::val  arg4){
+        return v->operator()(arg1, arg2, arg3, arg4);
+    });
+
+    py::class_<em::val>(m, "JsValue",  py::dynamic_attr())
 
         .def(py::init([](std::string arg) {
             return std::unique_ptr<em::val>(new em::val(arg.c_str()));
@@ -127,11 +87,11 @@ void export_val(py::module_ & m)
         // .def("__bool__",[](em::val * v){
         //     return  v->as<bool>();
         // })
-        .def("hasOwnProperty",[](em::val * v, const std::string & key){
+        .def_static("has_own_property",[](em::val * v, const std::string & key){
             return  v->hasOwnProperty(key.c_str( ));
         })
 
-        .def("_raw__getitem__",[](em::val * v, const std::string & key){
+        .def_static("_raw__getitem__",[](em::val * v, const std::string & key){
             return  v->operator[](key);
         })
 
@@ -146,37 +106,11 @@ void export_val(py::module_ & m)
             return v->call<em::val>("bind", arg1);
         })
 
-        .def("_fcal",[](em::val * v){
-            return v->operator()();
-        })
-        .def("_fcal",[](em::val * v, em::val  arg1){
-            return v->operator()(arg1);
-        })
-        .def("_fcal",[](em::val * v, em::val  arg1,  em::val  arg2){
-            return v->operator()(arg1, arg2);
-        })
-        .def("_fcal",[](em::val * v, em::val  arg1,  em::val  arg2, em::val  arg3){
-            return v->operator()(arg1, arg2, arg3);
-        })
 
-        .def("call",[](em::val * v, const std::string & key){
-            return v->call<em::val>(key.c_str());
-        })
-        .def("call",[](em::val * v, const std::string & key, em::val & arg1){
-            return v->call<em::val>(key.c_str(), arg1);
-        })
-        .def("call",[](em::val * v, const std::string & key, em::val & arg1,  em::val & arg2){
-            return v->call<em::val>(key.c_str(), arg1, arg2);
-        })
-        .def("call",[](em::val * v, const std::string & key, em::val & arg1,  em::val & arg2, em::val & arg3){
-            return v->call<em::val>(key.c_str(), arg1, arg2, arg3);
-        })
-        .def("call",[](em::val * v, const std::string & key, em::val & arg1,  em::val & arg2, em::val & arg3,  em::val & arg4){
-            return v->call<em::val>(key.c_str(), arg1, arg2, arg3, arg4);
-        })
-        .def("type_string", [](em::val * v){
+        .def_static("type_string", [](em::val * v){
             return v->typeOf().as<std::string>();
         })
+
         .def("keys", [](em::val * v){
             auto keys =  em::val::global("Object").call<em::val>("keys", *v);
             int length = keys["length"].as<int>();
