@@ -20,6 +20,7 @@ bool is_array(em::val em_val)
 
 py::object convert_impl(em::val em_val)
 {
+    
     const auto js_type = type_string(em_val);
 
     // is array

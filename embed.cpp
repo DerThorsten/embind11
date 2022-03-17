@@ -61,6 +61,7 @@ void set_pythonpath(const std::string & path)
 
 EMSCRIPTEN_BINDINGS(my_module) {
 
+
     em::class_<py::object>("pyobject")
 
         // 0-ary

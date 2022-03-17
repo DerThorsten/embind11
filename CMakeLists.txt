@@ -3,7 +3,7 @@ project(embind11 VERSION 0.1.2 DESCRIPTION "embind11 description")
 
 
 
-set(EM_FLAGS "${EM_FLAGS} --bind   -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
+set(EM_FLAGS "${EM_FLAGS} -Oz --bind   -s EXPORT_ALL=1 -s LINKABLE=1 -s EXPORT_ALL=1 -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
 set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js")
 set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
 set(EM_FLAGS "${EM_FLAGS} --extern-pre-js extern_pre.js")
@@ -14,7 +14,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EM_FLAGS} ${EM_LINKER_FLAGS}")
 set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS}  ${EM_FLAGS} ${EM_LINKER_FLAGS}")
 
 
-find_package(pybind11 REQUIRED)
+find_package(pybind11 REQUIRED CONFIG)
 
 SET(PYTHON_UTIL_LIBS 
     $ENV{PREFIX}/lib/python_internal/libmpdec.a
@@ -55,7 +55,7 @@ set_target_properties(embed PROPERTIES
             CXX_STANDARD 17
             CXX_EXTENSIONS OFF)
 set_target_properties(embed PROPERTIES 
-    LINK_FLAGS "-s MAIN_MODULE=1  -lstdc++ ${EM_FLAGS} -s EXPORTED_FUNCTIONS='[\"_explicit_bzero\"]'"
+    LINK_FLAGS "-s MAIN_MODULE=1  -lstdc++ ${EM_FLAGS}"
     CXX_FLAGS  "${EM_FLAGS} "
 )
 
