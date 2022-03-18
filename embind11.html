@@ -102,7 +102,16 @@
         localStorage.setItem("text", text)
 
         try{
-          themodule.exec_code(text)
+          t = themodule.exec_code(text)
+          console.log(t)
+
+          // console.log(Module)
+          // Module.ccall("exec_code", null, ['string'], [text], {async: true}).then(result => {
+          //   console.log("async exec d0ne");
+          // });
+
+
+
         }
         catch (e) {
           console.log("ERROR CATCHED",e)

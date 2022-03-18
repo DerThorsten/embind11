@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.9)
-project(embind11 VERSION 0.1.3 DESCRIPTION "embind11 description")
+project(embind11 VERSION 0.1.4 DESCRIPTION "embind11 description")
 
 
 
 set(EM_FLAGS "${EM_FLAGS} -Oz --bind   -s EXPORT_ALL=1 -s LINKABLE=1 -s EXPORT_ALL=1 -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
+set(EM_FLAGS "${EM_FLAGS} -s ASYNCIFY -s ")
 set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js")
 set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
 set(EM_FLAGS "${EM_FLAGS} --extern-pre-js extern_pre.js")
@@ -68,7 +69,7 @@ install(TARGETS embed
     ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(TARGETS embind11_side
-    ARCHIVE DESTINATION ${PYTHON_SITE_PACKAGES})
+    LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES})
 
 
 install(FILES
