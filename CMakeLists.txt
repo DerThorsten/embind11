@@ -50,6 +50,7 @@ add_executable(embed
     src/py/pure_python_init.cpp
     src/py/export_js_proxy.cpp
     src/py/export_embind11_module.cpp
+    src/js/export_py_object.cpp
     src/js/export_js_module.cpp
 )
 set_target_properties(embed PROPERTIES
