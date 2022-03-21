@@ -46,12 +46,14 @@ pybind11_add_module(embind11_side SHARED embind11_side.cpp)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable(embed 
     embed.cpp
+    src/js/export_py_interpreter.cpp
+    src/js/export_py_eval.cpp
+    src/js/export_py_object.cpp
+    src/js/export_js_module.cpp
     src/py/convert.cpp
     src/py/pure_python_init.cpp
     src/py/export_js_proxy.cpp
     src/py/export_embind11_module.cpp
-    src/js/export_py_object.cpp
-    src/js/export_js_module.cpp
 )
 set_target_properties(embed PROPERTIES
             CXX_STANDARD 17

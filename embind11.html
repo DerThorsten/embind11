@@ -141,6 +141,7 @@ if True:\n\
 
       themodule.initialize_interpreter()
 
+      scope = themodule['main_scope']()
 
       let btn2 = document.createElement("button");
       btn2.innerHTML = "run-try-catch";
@@ -150,16 +151,7 @@ if True:\n\
         localStorage.setItem("text", text)
 
         try{
-          t = themodule.exec_code(text)
-          console.log(t)
-
-          // console.log(Module)
-          // Module.ccall("exec_code", null, ['string'], [text], {async: true}).then(result => {
-          //   console.log("async exec d0ne");
-          // });
-
-
-
+          t = themodule.exec_code(text, scope)
         }
         catch (e) {
           console.log("ERROR CATCHED",e)
