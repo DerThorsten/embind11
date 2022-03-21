@@ -1,5 +1,4 @@
 #include <pybind11/pybind11.h>
-#include <pybind11/embed.h> 
 
 #include <emscripten.h>
 #include <emscripten/val.h>
@@ -13,14 +12,16 @@
 namespace py = pybind11;
 namespace em = emscripten;
 
-
-void pseudo_init(py::module_ & m);
-
-
-void export_val(py::module_ & m)
+void export_js_proxy(py::module_ & m)
 {   
-    // py::class_<EmValProxy>(m, "EmValProxy")
-    // ;
+
+
+    py::module_ m_internal = m.def_submodule("internal", "A submodule of 'embind11'");
+
+    m.def("sleep",[](const uint64_t t){
+        emscripten_sleep(t);
+    });
+
 
     m.def("js_get_global", [](const std::string & arg){
         return em::val::global(arg.c_str());
@@ -48,19 +49,19 @@ void export_val(py::module_ & m)
         return v->call<em::val>(key.c_str(), arg1, arg2);
     });
 
-    m.def("val_function_call",[](em::val * v){
+    m_internal.def("val_function_call",[](em::val * v){
         return v->operator()();
     });
-    m.def("val_function_call",[](em::val * v, em::val  arg1){
+    m_internal.def("val_function_call",[](em::val * v, em::val  arg1){
         return v->operator()(arg1);
     });
-    m.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2){
+    m_internal.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2){
         return v->operator()(arg1, arg2);
     });
-    m.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2,  em::val  arg3){
+    m_internal.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2,  em::val  arg3){
         return v->operator()(arg1, arg2, arg3);
     });
-    m.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2,  em::val  arg3,  em::val  arg4){
+    m_internal.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2,  em::val  arg3,  em::val  arg4){
         return v->operator()(arg1, arg2, arg3, arg4);
     });
 
@@ -139,7 +140,6 @@ void export_val(py::module_ & m)
             return embind11::convert_impl(*v);
         })
     ;
-    ;
 
     py::implicitly_convertible<std::string, em::val>();
     py::implicitly_convertible<float, em::val>();
@@ -147,27 +147,4 @@ void export_val(py::module_ & m)
     py::implicitly_convertible<int, em::val>();
     py::implicitly_convertible<bool, em::val>();
 
-    m.def("g", []( std::string  arg) {
-        return em::val::global(arg.c_str());
-    });
-
-    m.def("add", [](int i, int j) {
-        return i + j;
-    });
-}
-
-// void export_exec(py::module_ & m)
-// {
-//     // m.def("run_script", [](const std::string & code){
-//     //     emscripten_run_script(code.c_str());
-//     // });
-//     // m.def("eval",[](const std::string & code) -> em::val {
-//     //     return em::val::global("eval").operator()(code);
-//     // });
-// }
-
-void export_js_module(py::module_ & m)
-{  
-    export_val(m);
-    pseudo_init(m);
 }

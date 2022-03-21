@@ -1,5 +1,5 @@
 #include "macro_magic.hpp"
-BEGIN_PYCODE R"pycode(#"
+BEGIN_PYTHON_INIT(embind11) R"pycode(#"
 
 class _js(object):
     def __getattr__(self, name):
@@ -44,8 +44,6 @@ def js_callback(py_function):
     _js_py_object = js_py_object(py_function)
     return _js_py_object['__call__'].bind(_js_py_object)
 
-def console_log(*args):
-    JsValue.get_global("console").log(*args)
 
 def ensure_js_val(arg):
     if isinstance(arg, JsValue):
@@ -69,8 +67,9 @@ def apply(js_function, args):
         js_arg = ensure_js_val(arg)
         val_call(js_array_args, "push", js_arg)
 
-    applyTryCatch = js.applyTryCatch
-    ret  = val_function_call(applyTryCatch, js_function, js_null(), js_array_args)
+    #applyTryCatch = js.applyTryCatch
+    applyTryCatch = module_property('_apply_try_catch')
+    ret  = internal.val_function_call(applyTryCatch, js_function, js_null(), js_array_args)
     return error_checked(ret)
 
 def member_apply(self, js_function, args):
@@ -79,9 +78,10 @@ def member_apply(self, js_function, args):
         js_arg = ensure_js_val(arg)
         val_call(js_array_args, "push", js_arg)
 
-    applyTryCatch = js.applyTryCatch
-    ret  = val_function_call(applyTryCatch, js_function, self, js_array_args)
+    #applyTryCatch = js.applyTryCatch
+    applyTryCatch = module_property('_apply_try_catch')
+    ret  = internal.val_function_call(applyTryCatch, js_function, self, js_array_args)
     return error_checked(ret)
 
 #)pycode"
-END_PYCODE
+END_PYTHON_INIT

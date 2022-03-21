@@ -27,8 +27,6 @@ SET(PYTHON_UTIL_LIBS
 
 configure_file(embind11.html        ${CMAKE_CURRENT_BINARY_DIR}/embind11.html COPYONLY)
 configure_file(pre.js               ${CMAKE_CURRENT_BINARY_DIR}/pre.js COPYONLY)
-configure_file(post.js              ${CMAKE_CURRENT_BINARY_DIR}/post.js COPYONLY)
-configure_file(extern_pre.js        ${CMAKE_CURRENT_BINARY_DIR}/extern_pre.js COPYONLY)
 
 
 ################################################################
@@ -48,9 +46,11 @@ pybind11_add_module(embind11_side SHARED embind11_side.cpp)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable(embed 
     embed.cpp
-    src/convert.cpp
-    src/pure_python_init.cpp
-    src/export_js_module.cpp
+    src/py/convert.cpp
+    src/py/pure_python_init.cpp
+    src/py/export_js_proxy.cpp
+    src/py/export_embind11_module.cpp
+    src/js/export_js_module.cpp
 )
 set_target_properties(embed PROPERTIES
             CXX_STANDARD 17
