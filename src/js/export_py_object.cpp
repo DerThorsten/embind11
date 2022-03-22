@@ -12,6 +12,21 @@ void export_py_object()
 {
     em::class_<py::object>("pyobject")
 
+
+        // variadic-call
+        .function("__call_variadic__", 
+            em::select_overload<int(py::object &)>(
+                [](py::object & pyobject)
+                {
+                    // pyobject is ALWAYS holding an emscripten::val
+                    // holding an array of arguments
+
+                    //pyobject();
+                    return 1;
+                }
+            )
+        )
+
         // 0-ary
         .function("__call__", 
             em::select_overload<int(py::object &)>(
