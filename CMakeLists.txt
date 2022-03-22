@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(embind11 VERSION 0.1.7 DESCRIPTION "embind11 description")
+project(embind11 VERSION 0.1.8 DESCRIPTION "embind11 description")
 
 
 
