@@ -37,7 +37,10 @@ configure_file(pre.js               ${CMAKE_CURRENT_BINARY_DIR}/pre.js COPYONLY)
 # in another wasm executable  
 ################################################################
 pybind11_add_module(embind11_side SHARED embind11_side.cpp)
-
+set_target_properties(embind11_side PROPERTIES 
+    LINK_FLAGS "-s SIDE_MODULE=1 ${EM_FLAGS} "
+    CXX_FLAGS  "${EM_FLAGS}"
+)
 
 
 
