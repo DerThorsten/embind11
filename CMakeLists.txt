@@ -3,10 +3,11 @@ project(embind11 VERSION 0.1.10 DESCRIPTION "embind11 description")
 
 
 
-set(EM_FLAGS "${EM_FLAGS} -Oz --bind   -s EXPORT_ALL=1 -s LINKABLE=1 -s EXPORT_ALL=1 -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
-set(EM_FLAGS "${EM_FLAGS} -s ASYNCIFY")
+
+set(EM_FLAGS "${EM_FLAGS}  --bind   -s EXPORT_ALL=1 -s LINKABLE=1 -s EXPORT_ALL=1 -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
+# set(EM_FLAGS "${EM_FLAGS} -s ASYNCIFY")
 set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js")
-# set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
+set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
 # set(EM_FLAGS "${EM_FLAGS} --extern-pre-js extern_pre.js")
 # linker flags
 set(EM_LINKER_FLAGS "${EM_LINKER_FLAGS} -WASM=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE -s ERROR_ON_UNDEFINED_SYMBOLS=1")
@@ -29,6 +30,7 @@ SET(PYTHON_UTIL_LIBS
 
 configure_file(embind11.html        ${CMAKE_CURRENT_BINARY_DIR}/embind11.html COPYONLY)
 configure_file(pre.js               ${CMAKE_CURRENT_BINARY_DIR}/pre.js COPYONLY)
+configure_file(post.js               ${CMAKE_CURRENT_BINARY_DIR}/post.js COPYONLY)
 
 
 ################################################################
@@ -64,7 +66,7 @@ set_target_properties(embed PROPERTIES
 target_link_libraries(embed PRIVATE ${PYTHON_UTIL_LIBS} pybind11::embed)
 
 set_target_properties(embed PROPERTIES 
-    LINK_FLAGS "-s MAIN_MODULE=1  -lstdc++ ${EM_FLAGS} -lstdc++"
+    LINK_FLAGS "-s MAIN_MODULE=1  -lstdc++ ${EM_FLAGS}"
     CXX_FLAGS  "${EM_FLAGS}"
 )
 
