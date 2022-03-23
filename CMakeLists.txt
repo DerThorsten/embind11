@@ -3,13 +3,12 @@ project(embind11 VERSION 0.1.10 DESCRIPTION "embind11 description")
 
 
 
-option(WITH_JS_PY_BRIDGE "Build python to js bridge" ON)
+option(WITH_JS_PY_BRIDGE "Build python to js bridge" OFF)
 if(WITH_JS_PY_BRIDGE)
     add_compile_definitions(WITH_JS_PY_BRIDGE)
 endif()
 
 
-set(EM_FLAGS "${EM_FLAGS} -O3 --bind   -s EXPORT_ALL=1 -s LINKABLE=1 -s EXPORT_ALL=1 -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
 # set(EM_FLAGS "${EM_FLAGS} -s ASYNCIFY")
 set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js")
 set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
