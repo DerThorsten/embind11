@@ -34,12 +34,11 @@ configure_file(post.js               ${CMAKE_CURRENT_BINARY_DIR}/post.js COPYONL
 
 
 ################################################################
-# SIDE_MODULE
-# create compiled extension named "embind11" which we want to consume
-# in another wasm executable  
+# SIDE_MODULES
+# create compiled extensions 
 ################################################################
-pybind11_add_module(embind11_side SHARED embind11_side.cpp)
-
+pybind11_add_module(embind11_side SHARED    embind11_side.cpp)
+pybind11_add_module(embind11_side2 SHARED   embind11_side2.cpp)
 
 
 
@@ -75,6 +74,9 @@ install(TARGETS embed
     ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(TARGETS embind11_side
+    LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES})
+
+install(TARGETS embind11_side2
     LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES})
 
 

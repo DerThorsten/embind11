@@ -25,3 +25,8 @@ emboa pack python pure-so \
     embind11_side \
     --version=3.10
 
+emboa pack python pure-so \
+    $HOME/micromamba/envs/emforgetest \
+    embind11_side2.so \
+    embind11_side2 \
+    --version=3.10
