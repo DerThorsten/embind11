@@ -3,8 +3,13 @@ project(embind11 VERSION 0.1.10 DESCRIPTION "embind11 description")
 
 
 
+option(WITH_JS_PY_BRIDGE "Build python to js bridge" ON)
+if(WITH_JS_PY_BRIDGE)
+    add_compile_definitions(WITH_JS_PY_BRIDGE)
+endif()
 
-set(EM_FLAGS "${EM_FLAGS}  --bind   -s EXPORT_ALL=1 -s LINKABLE=1 -s EXPORT_ALL=1 -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
+
+set(EM_FLAGS "${EM_FLAGS} -O3 --bind   -s EXPORT_ALL=1 -s LINKABLE=1 -s EXPORT_ALL=1 -std=c++17 -fPIC -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions -s ALLOW_MEMORY_GROWTH=1")
 # set(EM_FLAGS "${EM_FLAGS} -s ASYNCIFY")
 set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js")
 set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
@@ -45,17 +50,30 @@ pybind11_add_module(embind11_side2 SHARED   embind11_side2.cpp)
 ###########################################################################
 # embed python in a wasm executable (this IS MAIN
 ###########################################################################
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-add_executable(embed 
-    embed.cpp
-    src/js/export_py_interpreter.cpp
+
+SET(SOURCES
     src/js/export_py_eval.cpp
-    src/js/export_py_object.cpp
+    src/js/export_py_interpreter.cpp
     src/js/export_js_module.cpp
+    src/js/export_py_object.cpp
+)
+if(WITH_JS_PY_BRIDGE)
+    SET(SOURCES ${SOURCES}
+
     src/py/convert.cpp
     src/py/pure_python_init.cpp
     src/py/export_js_proxy.cpp
     src/py/export_embind11_module.cpp
+    )
+endif()
+
+
+
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_executable(embed 
+    embed.cpp
+    ${SOURCES}
 )
 set_target_properties(embed PROPERTIES
             CXX_STANDARD 17

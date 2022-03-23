@@ -13,8 +13,10 @@ export CMAKE_PREFIX_PATH=$PREFIX
 export CMAKE_SYSTEM_PREFIX_PATH=$PREFIX 
 # export EMCC_FORCE_STDLIBS=1
 emcmake cmake  \
+    -DCMAKE_BUILD_TYPE=Release\
     -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON \
     -DCMAKE_PROJECT_INCLUDE=overwriteProp.cmake \
+    -DWITH_JS_PY_BRIDGE=OFF \
     ..
 
 make -j12

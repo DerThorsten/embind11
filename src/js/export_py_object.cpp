@@ -12,7 +12,7 @@ void export_py_object()
 {
     em::class_<py::object>("pyobject")
 
-
+        #ifdef WITH_JS_PY_BRIDGE
         // variadic-call
         .function("__call_variadic__", 
             em::select_overload<int(py::object &)>(
@@ -74,6 +74,7 @@ void export_py_object()
                 return 1;
             })
         )
+        #endif
     ;
 
 }
