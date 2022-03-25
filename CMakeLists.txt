@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.9)
-project(embind11 VERSION 0.1.10 DESCRIPTION "embind11 description")
+project(embind11 VERSION 0.2.0 DESCRIPTION "embind11 description")
 
 
 
-option(WITH_JS_PY_BRIDGE "Build python to js bridge" OFF)
+option(WITH_JS_PY_BRIDGE "Build experimental js-py bridge" OFF)
 if(WITH_JS_PY_BRIDGE)
     add_compile_definitions(WITH_JS_PY_BRIDGE)
 endif()
