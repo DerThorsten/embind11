@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(embind11 VERSION 0.2.0 DESCRIPTION "embind11 description")
+project(embind11 VERSION 0.2.1 DESCRIPTION "embind11 description")
 
 
 
@@ -9,8 +9,8 @@ if(WITH_JS_PY_BRIDGE)
 endif()
 
 
-# set(EM_FLAGS "${EM_FLAGS} -s ASYNCIFY")
-set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js")
+set(EM_FLAGS "${EM_FLAGS} --bind")
+set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js -fPIC")
 set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
 # set(EM_FLAGS "${EM_FLAGS} --extern-pre-js extern_pre.js")
 # linker flags
@@ -23,8 +23,6 @@ set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS}  ${EM_FLAGS} ${EM_LINKER_FLAGS}")
 find_package(pybind11 REQUIRED CONFIG)
 
 SET(PYTHON_UTIL_LIBS 
-    # $ENV{PREFIX}/lib/python_internal/libmpdec.a
-    # $ENV{PREFIX}/lib/python_internal/libexpat.a
     $ENV{PREFIX}/lib/libbz2.a
     $ENV{PREFIX}/lib/libz.a
     $ENV{PREFIX}/lib/libsqlite3.a
@@ -82,8 +80,8 @@ set_target_properties(embed PROPERTIES
 target_link_libraries(embed PRIVATE ${PYTHON_UTIL_LIBS} pybind11::embed)
 
 set_target_properties(embed PROPERTIES 
-    LINK_FLAGS "-s MAIN_MODULE=1  -lstdc++ ${EM_FLAGS}"
-    CXX_FLAGS  "${EM_FLAGS}"
+    LINK_FLAGS "-s MAIN_MODULE=1  -lstdc++ ${EM_FLAGS} "
+    CXX_FLAGS  "${EM_FLAGS} -fPIC"
 )
 
 include(GNUInstallDirs)
