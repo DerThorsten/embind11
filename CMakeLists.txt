@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(embind11 VERSION 0.2.2 DESCRIPTION "embind11 description")
+project(embind11 VERSION 0.2.5 DESCRIPTION "embind11 description")
 
 
 
@@ -9,7 +9,7 @@ if(WITH_JS_PY_BRIDGE)
 endif()
 
 
-set(EM_FLAGS "${EM_FLAGS} --bind")
+set(EM_FLAGS "${EM_FLAGS} --bind -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions ")
 set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js -fPIC")
 set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
 # set(EM_FLAGS "${EM_FLAGS} --extern-pre-js extern_pre.js")

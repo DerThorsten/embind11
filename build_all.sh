@@ -4,7 +4,6 @@ set -e
 mkdir -p bld_ems
 cd bld_ems
 
-emboa pack python core $HOME/micromamba/envs/emforgetest --version=3.10
 
 
 
@@ -21,6 +20,10 @@ emcmake cmake  \
 
 make -j12
 
+
+emboa pack python core $HOME/micromamba/envs/emforgetest --version=3.10
+
+
 emboa pack python pure-so \
     $HOME/micromamba/envs/emforgetest \
     embind11_side.so \
@@ -32,3 +35,9 @@ emboa pack python pure-so \
     embind11_side2.so \
     embind11_side2 \
     --version=3.10
+
+# emboa pack python package \
+#     $HOME/micromamba/envs/emforgetest \
+#     regex \
+#     --version=3.10
+

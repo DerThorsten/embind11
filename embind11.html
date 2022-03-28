@@ -141,8 +141,10 @@ if True:\n\
       var themodule = await createModule({print: print,printErr:printErr})
       Module = themodule
       var promise_core = await import('./python_data.js')
+      // var promise_side3 = await import('./regex.js')
       var promise_side = await import('./embind11_side.js')
       var promise_side2 = await import('./embind11_side2.js')
+
       var deps = await waitRunDependency()
 
 
@@ -162,7 +164,7 @@ if True:\n\
         }
         catch (e) {
           console.log("ERROR CATCHED",e)
-          logeditor.replaceRange("JS-ERROR: "+String(e)+"\n", CodeMirror.Pos(logeditor.lastLine()))
+          logeditor.replaceRange("JS-ERROR: "+e.toString()+"\n", CodeMirror.Pos(logeditor.lastLine()))
         }
       };
       document.body.appendChild(btn2);

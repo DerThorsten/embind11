@@ -20,4 +20,3 @@ void export_js_module();
 EMSCRIPTEN_BINDINGS(my_module) {
     export_js_module();
 }
-
