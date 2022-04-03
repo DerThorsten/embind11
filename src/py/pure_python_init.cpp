@@ -1,4 +1,4 @@
-#include "macro_magic.hpp"
+#include "embind11/macro_magic.hpp"
 BEGIN_PYTHON_INIT(embind11) R"pycode(#"
 
 class _js(object):

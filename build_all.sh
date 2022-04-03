@@ -16,6 +16,8 @@ emcmake cmake  \
     -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON \
     -DCMAKE_PROJECT_INCLUDE=overwriteProp.cmake \
     -DWITH_JS_PY_BRIDGE=OFF \
+    -DENV_NODE=OFF \
+    -DENV_WEB=ON \
     ..
 
 make -j12

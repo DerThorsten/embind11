@@ -2,16 +2,33 @@ cmake_minimum_required(VERSION 3.9)
 project(embind11 VERSION 0.2.5 DESCRIPTION "embind11 description")
 
 
+option(ENV_NODE "Build for the node env" OFF)
+
+
+
+if(ENV_NODE)
+    SET(ENVIRONMENT "node")
+else()
+    SET(ENVIRONMENT "web")
+endif()
+
 
 option(WITH_JS_PY_BRIDGE "Build experimental js-py bridge" OFF)
+
+
+
+
+
 if(WITH_JS_PY_BRIDGE)
     add_compile_definitions(WITH_JS_PY_BRIDGE)
 endif()
 
 
-set(EM_FLAGS "${EM_FLAGS} --bind -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions ")
+set(EM_FLAGS "${EM_FLAGS} -s ENVIRONMENT=${ENVIRONMENT} --bind -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions ")
 set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js -fPIC")
 set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
+set(EM_FLAGS "${EM_FLAGS} -s ALLOW_MEMORY_GROWTH")
+
 # set(EM_FLAGS "${EM_FLAGS} --extern-pre-js extern_pre.js")
 # linker flags
 set(EM_LINKER_FLAGS "${EM_LINKER_FLAGS} -WASM=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE -s ERROR_ON_UNDEFINED_SYMBOLS=1")
@@ -19,6 +36,7 @@ set(EM_LINKER_FLAGS "${EM_LINKER_FLAGS} -s EXPORT_NAME=\"createModule\" -s EXPOR
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EM_FLAGS} ${EM_LINKER_FLAGS}")
 set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS}  ${EM_FLAGS} ${EM_LINKER_FLAGS}")
 
+message(STATUS ${EM_FLAGS})
 
 find_package(pybind11 REQUIRED CONFIG)
 
