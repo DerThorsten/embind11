@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(embind11 VERSION 0.2.5 DESCRIPTION "embind11 description")
+project(embind11 VERSION 0.3.0 DESCRIPTION "embind11 description")
 
 
 option(ENV_NODE "Build for the node env" OFF)
