@@ -24,17 +24,23 @@ if(WITH_JS_PY_BRIDGE)
 endif()
 
 
-set(EM_FLAGS "${EM_FLAGS} -s ENVIRONMENT=${ENVIRONMENT} --bind -s DISABLE_EXCEPTION_THROWING=0 -s DISABLE_EXCEPTION_CATCHING=0  -s NO_DISABLE_EXCEPTION_CATCHING -fexceptions ")
+set(EM_FLAGS "${EM_FLAGS} -Os -s EXPORT_ALL=1  -s ENVIRONMENT=${ENVIRONMENT} --bind")
+
+# set(EM_FLAGS "${EM_FLAGS} -s ASYNCIFY")
+
+# set(EM_FLAGS "${EM_FLAGS} -s DISABLE_EXCEPTION_THROWING=0")
+# set(EM_FLAGS "${EM_FLAGS} -s DISABLE_EXCEPTION_CATCHING=0 ")
+# set(EM_FLAGS "${EM_FLAGS} -s NO_DISABLE_EXCEPTION_CATCHING")
+set(EM_FLAGS "${EM_FLAGS} -fwasm-exceptions -s LZ4=1")
+
+set(EM_FLAGS "${EM_FLAGS} -s ALLOW_MEMORY_GROWTH")
+set(EM_FLAGS "${EM_FLAGS} -WASM=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE")
+set(EM_FLAGS "${EM_FLAGS} -s ERROR_ON_UNDEFINED_SYMBOLS=1")
+set(EM_FLAGS "${EM_FLAGS} -s EXPORT_NAME=\"createModule\"")
+set(EM_FLAGS "${EM_FLAGS} -s EXPORT_ES6=0 -s USE_ES6_IMPORT_META=0")
+
 set(EM_FLAGS "${EM_FLAGS} --pre-js pre.js -fPIC")
 set(EM_FLAGS "${EM_FLAGS} --post-js post.js")
-set(EM_FLAGS "${EM_FLAGS} -s ALLOW_MEMORY_GROWTH")
-
-# set(EM_FLAGS "${EM_FLAGS} --extern-pre-js extern_pre.js")
-# linker flags
-set(EM_LINKER_FLAGS "${EM_LINKER_FLAGS} -WASM=1 -s FORCE_FILESYSTEM=1 -s MODULARIZE -s ERROR_ON_UNDEFINED_SYMBOLS=1")
-set(EM_LINKER_FLAGS "${EM_LINKER_FLAGS} -s EXPORT_NAME=\"createModule\" -s EXPORT_ES6=0 -s USE_ES6_IMPORT_META=0 -s ERROR_ON_UNDEFINED_SYMBOLS=1")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EM_FLAGS} ${EM_LINKER_FLAGS}")
-set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS}  ${EM_FLAGS} ${EM_LINKER_FLAGS}")
 
 message(STATUS ${EM_FLAGS})
 
@@ -86,20 +92,23 @@ endif()
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${pybind11_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR})
+
+add_library(embedlib STATIC ${SOURCES})
+set_target_properties(embedlib PROPERTIES 
+    LINK_FLAGS "${EM_FLAGS} -fPIC     -s EXPORT_BINDINGS=1  -s EXPORTED_RUNTIME_METHODS=\"['_js_get_global']\""
+    COMPILE_FLAGS  "${EM_FLAGS} -fPIC -s EXPORT_BINDINGS=1")
+target_link_libraries(embedlib PRIVATE  ${PYTHON_UTIL_LIBS} pybind11::embed)
 add_executable(embed 
     embed.cpp
-    ${SOURCES}
+    # ${SOURCES}
 )
-set_target_properties(embed PROPERTIES
-            CXX_STANDARD 17
-            CXX_EXTENSIONS OFF)
 
-
-target_link_libraries(embed PRIVATE ${PYTHON_UTIL_LIBS} pybind11::embed)
+target_link_libraries(embed PRIVATE  embedlib )
 
 set_target_properties(embed PROPERTIES 
-    LINK_FLAGS "-s MAIN_MODULE=1  -lstdc++ ${EM_FLAGS} "
-    CXX_FLAGS  "${EM_FLAGS} -fPIC"
+    LINK_FLAGS "-s MAIN_MODULE=1  -lstdc++ ${EM_FLAGS} -fPIC -s EXPORT_BINDINGS=1 -s EXPORT_ALL=1  -s EXPORTED_RUNTIME_METHODS=\"['_js_get_global']\""
+    COMPILE_FLAGS  "${EM_FLAGS} -fPIC -s EXPORT_BINDINGS=1 -s EXPORT_ALL=1 "
 )
 
 include(GNUInstallDirs)

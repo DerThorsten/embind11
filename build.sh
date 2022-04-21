@@ -1,5 +1,4 @@
-#bin/bash
-
+#!/bin/bash
 cd bld_ems
 
 export PREFIX=$HOME/micromamba/envs/emtest

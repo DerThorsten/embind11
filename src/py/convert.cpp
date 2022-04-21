@@ -15,12 +15,13 @@ std::string type_string(em::val em_val)
 }
 bool is_array(em::val em_val)
 {
+    // return false;
     return em::val::global("Array").call<em::val>("isArray", em_val).as<bool>();
 }
 
 py::object convert_impl(em::val em_val)
 {
-    
+    #if 1
     const auto js_type = type_string(em_val);
 
     // is array
@@ -78,6 +79,7 @@ py::object convert_impl(em::val em_val)
     {
         return py::cast(std::string("unknown type:") + js_type);
     }
+    #endif
 }
 
 

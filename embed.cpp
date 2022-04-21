@@ -1,22 +1,37 @@
-#ifdef WITH_JS_PY_BRIDGE
-#include <pybind11/embed.h> 
-#endif
+// #ifdef WITH_JS_PY_BRIDGE
+#include <pybind11/pybind11.h> 
+// #endif
 
 #include <emscripten/bind.h>
-
+#include <emscripten.h>
+#include <emscripten/val.h>
 
 #ifdef WITH_JS_PY_BRIDGE
-void export_embind11_module(py::module_ & m);
+
+void export_embind11_module(pybind11::module_ & m);
 // define the python module
-PYBIND11_EMBEDDED_MODULE(embind11, m) {
-    export_embind11_module(m);
-}
+
 #endif
 
+//  // __attribute__((used))
+// void js_get_global(const char *name);
+
+
+EM_JS(void, js_get_global, (const char * name), {
+
+   console.log('js_get_global name: ' + [name]);
+});
 
 // define the js module
 void export_js_module();
 
 EMSCRIPTEN_BINDINGS(my_module) {
     export_js_module();
+}
+
+
+int main(){
+    if(false){
+        js_get_global("hello");
+    }
 }

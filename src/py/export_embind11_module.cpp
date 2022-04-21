@@ -24,3 +24,7 @@ void export_embind11_module(py::module_ & embind11_module)
     export_js_proxy(embind11_module);
     PYTHON_INIT(embind11)(embind11_module);
 }
+
+PYBIND11_EMBEDDED_MODULE(embind11, m) {
+    export_embind11_module(m);
+}

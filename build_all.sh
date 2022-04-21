@@ -15,7 +15,7 @@ emcmake cmake  \
     -DCMAKE_BUILD_TYPE=Release\
     -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON \
     -DCMAKE_PROJECT_INCLUDE=overwriteProp.cmake \
-    -DWITH_JS_PY_BRIDGE=OFF \
+    -DWITH_JS_PY_BRIDGE=ON \
     -DENV_NODE=OFF \
     -DENV_WEB=ON \
     ..

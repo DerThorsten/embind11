@@ -12,6 +12,8 @@
 namespace py = pybind11;
 namespace em = emscripten;
 
+
+
 void export_js_proxy(py::module_ & m)
 {   
 
@@ -40,6 +42,7 @@ void export_js_proxy(py::module_ & m)
     }, py::return_value_policy::copy);
 
 
+    #if 1
 
     m.def("val_call",[](em::val * v, const std::string & key, em::val & arg1){
         return v->call<em::val>(key.c_str(), arg1);
@@ -64,7 +67,7 @@ void export_js_proxy(py::module_ & m)
     m_internal.def("val_function_call",[](em::val * v, em::val  arg1,  em::val  arg2,  em::val  arg3,  em::val  arg4){
         return v->operator()(arg1, arg2, arg3, arg4);
     });
-
+    # endif
     py::class_<em::val>(m, "JsValue",  py::dynamic_attr())
 
         .def(py::init([](std::string arg) {
@@ -82,9 +85,10 @@ void export_js_proxy(py::module_ & m)
         .def(py::init([](bool arg) {
             return std::unique_ptr<em::val>(new em::val(arg));
         }))
-        // .def("new",[](em::val  v, em::val arg1){
-        //     return  v.new_(arg1);
-        // })
+        #if 1
+        .def("new",[](em::val  v, em::val arg1){
+            return  v.new_(arg1);
+        })
         // .def("__bool__",[](em::val * v){
         //     return  v->as<bool>();
         // })
@@ -139,6 +143,7 @@ void export_js_proxy(py::module_ & m)
         .def("pythonize", [](em::val * v)-> py::object {
             return embind11::convert_impl(*v);
         })
+        #endif
     ;
 
     py::implicitly_convertible<std::string, em::val>();
